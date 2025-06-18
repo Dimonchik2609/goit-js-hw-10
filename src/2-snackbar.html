@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <a class="nav-link" href="./index.html">Back</a>
+    <form class="form">
+      <label for="delay">Delay (ms)</label>
+      <input
+        class="data-picker delay"
+        id="delay"
+        type="number"
+        name="delay"
+        required
+      />
+
+      <fieldset class="fieldset">
+        <legend>State</legend>
+        <label for="fulfilled"
+          >Fulfilled
+          <input
+            id="fulfilled"
+            type="radio"
+            name="state"
+            value="fulfilled"
+            required
+          />
+        </label>
+        <label for="rejected"
+          >Rejected
+          <input
+            id="rejected"
+            type="radio"
+            name="state"
+            value="rejected"
+            required
+          />
+        </label>
+      </fieldset>
+
+      <button class="ntf-btn" type="submit">Create notification</button>
+    </form>
+
+    <script src="./js/2-snackbar.js" type="module"></script>
+  </body>
+</html>
