@@ -1,39 +1,50 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-const formEl = document.querySelector('.form');
-
-formEl.addEventListener('submit', formSubmitHandler);
-
-function formSubmitHandler(e) {
-  e.preventDefault();
-  const delay = +e.currentTarget.elements.delay.value;
-  const state = e.currentTarget.elements.state.value;
-
-  createNewPromise(delay, state);
-}
-
-function createNewPromise(delay, state) {
-  new Promise((resolve, reject) => {
+// Функція для створення промісу
+function createNewPromise({ position, delay, state }) {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (state === 'fulfilled') {
-        resolve(delay);
+        resolve({ position, delay });
+      } else {
+        reject({ position, delay });
       }
-      reject(delay);
     }, delay);
-  })
-    .then(value => {
-      iziToast.show({
-        color: 'green',
-        position: 'topRight',
-        message: `✅ Fulfilled promise in ${value}ms`,
+  });
+}
+
+// Обробка події submit форми
+const form = document.querySelector('.form');
+form.addEventListener('submit', handleSubmit);
+
+function handleSubmit(event) {
+  event.preventDefault();
+
+  const formData = new FormData(event.target);
+  const delay = Number(formData.get('delay'));
+  const step = Number(formData.get('step'));
+  const amount = Number(formData.get('amount'));
+  const state = formData.get('state');
+
+  // Створення послідовних промісів
+  for (let i = 1; i <= amount; i++) {
+    const currentDelay = delay + (i - 1) * step;
+    createNewPromise({ position: i, delay: currentDelay, state })
+      .then(({ position, delay }) => {
+        iziToast.success({
+          title: 'Success',
+          message: `✅ Fulfilled promise ${position} in ${delay}ms`,
+        });
+      })
+      .catch(({ position, delay }) => {
+        iziToast.error({
+          title: 'Error',
+          message: `❌ Rejected promise ${position} in ${delay}ms`,
+        });
       });
-    })
-    .catch(value => {
-      iziToast.show({
-        color: 'red',
-        position: 'topRight',
-        message: `❌ Rejected promise in ${value}ms`,
-      });
-    });
+  }
+
+  // Очищення форми після відправки
+  form.reset();
 }
